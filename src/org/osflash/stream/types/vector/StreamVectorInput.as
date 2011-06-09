@@ -1,40 +1,39 @@
-package org.osflash.stream.types.string
+package org.osflash.stream.types.vector
 {
 	import org.osflash.stream.IStreamInput;
 	import org.osflash.stream.IStreamOutput;
 	import org.osflash.stream.StreamError;
 	import org.osflash.stream.StreamTypes;
+	import org.osflash.stream.types.vector.packets.IVectorPacket;
+	import org.osflash.stream.types.vector.packets.VectorBooleanPacket;
+	import org.osflash.stream.types.vector.packets.VectorFloatPacket;
+	import org.osflash.stream.types.vector.packets.VectorIntPacket;
+	import org.osflash.stream.types.vector.packets.VectorUIntPacket;
+	import org.osflash.stream.types.vector.packets.VectorUtfPacket;
 
 	import flash.errors.IllegalOperationError;
 	/**
-	 * @author Simon Richardson - simon@ustwo.co.uk
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
-	public class StreamStringInput implements IStreamInput
+	public class StreamVectorInput implements IStreamInput
 	{
-
-		/**
-		 * @private
-		 */
-		private var _buffer : String;
 		
 		/**
 		 * @private
 		 */
-		private var _position : uint;
+		private var _buffer : Vector.<IVectorPacket>;
 		
 		/**
 		 * @private
 		 */
-		private var _seperator : int;
+		private var _position : int;
 		
-		public function StreamStringInput(stream : IStreamOutput)
+		public function StreamVectorInput(stream : IStreamOutput)
 		{
-			if (!(stream is StreamStringOutput))
+			if (!(stream is StreamVectorOutput))
 				throw new Error('Missing Implementation');
 			
-			_seperator = StreamStringOutput.SEPERATOR.charCodeAt(0);
-
-			const output : StreamStringOutput = StreamStringOutput(stream);
+			const output : StreamVectorOutput = StreamVectorOutput(stream);
 			output.position = 0;
 			
 			_buffer = output.buffer;
@@ -49,12 +48,11 @@ package org.osflash.stream.types.string
 			if(readByte() != StreamTypes.INT)
 				StreamError.throwError(StreamError.INVALID_INT);
 			
-			const length : int = readPacketLength();
-			const result : int = parseInt(_buffer.substr(_position, length));
+			const packet : VectorIntPacket = VectorIntPacket(_buffer[_position]);
 			
-			_position += length;
+			_position++;
 			
-			return result;
+			return packet.value;
 		}
 
 		/**
@@ -64,13 +62,12 @@ package org.osflash.stream.types.string
 		{
 			if(readByte() != StreamTypes.UINT)
 				StreamError.throwError(StreamError.INVALID_UINT);
-				
-			const length : int = readPacketLength();
-			const result : uint = parseInt(_buffer.substr(_position, length));
 			
-			_position += length;
+			const packet : VectorUIntPacket = VectorUIntPacket(_buffer[_position]);
 			
-			return result;
+			_position++;
+			
+			return packet.value;
 		}
 
 		/**
@@ -80,13 +77,12 @@ package org.osflash.stream.types.string
 		{
 			if(readByte() != StreamTypes.FLOAT)
 				StreamError.throwError(StreamError.INVALID_FLOAT);
-				
-			const length : int = readPacketLength();
-			const result : Number = parseFloat(_buffer.substr(_position, length));
 			
-			_position += length;
+			const packet : VectorFloatPacket = VectorFloatPacket(_buffer[_position]);
 			
-			return result;
+			_position++;
+			
+			return packet.value;
 		}
 
 		/**
@@ -96,13 +92,12 @@ package org.osflash.stream.types.string
 		{
 			if(readByte() != StreamTypes.UTF)
 				StreamError.throwError(StreamError.INVALID_UTF);
-				
-			const length : int = readPacketLength();
-			const result : String = _buffer.substr(_position, length);
 			
-			_position += length;
+			const packet : VectorUtfPacket = VectorUtfPacket(_buffer[_position]);
 			
-			return result;
+			_position++;
+			
+			return packet.value;
 		}
 
 		/**
@@ -112,13 +107,12 @@ package org.osflash.stream.types.string
 		{
 			if(readByte() != StreamTypes.BOOLEAN)
 				StreamError.throwError(StreamError.INVALID_BOOLEAN);
-				
-			const length : int = readPacketLength();
-			const result : Boolean = _buffer.substr(_position, length) == "true";
 			
-			_position += length;
+			const packet : VectorBooleanPacket = VectorBooleanPacket(_buffer[_position]);
 			
-			return result;
+			_position++;
+			
+			return packet.value;
 		}
 
 		/**
@@ -126,7 +120,7 @@ package org.osflash.stream.types.string
 		 */
 		public function clear() : void
 		{
-			_buffer = "";
+			_buffer.length = 0;
 			_position = 0;
 		}
 		
@@ -135,36 +129,9 @@ package org.osflash.stream.types.string
 		 */
 		private function readByte() : int
 		{
-			const byte : int = parseInt(_buffer.substr(_position, 1));
-			_position++;
-			
-			return byte;
+			return _buffer[_position].type;
 		}
-		
-		/**
-		 * @private
-		 */
-		private function readPacketLength() : int
-		{
-			var packet : String = "";
-			
-			const total : int = _buffer.length;
-			for(var i : int = _position; i < total; i++)
-			{
-				if(_buffer.charCodeAt(_position) == _seperator)
-				{
-					_position++;
-					break;
-				}
-				
-				packet += _buffer.charAt(_position);
-				
-				_position++;
-			}
-			
-			return parseInt(packet);
-		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
@@ -172,8 +139,8 @@ package org.osflash.stream.types.string
 		{
 			if(_position >= _buffer.length)
 				return StreamTypes.EOF;
-				
-			return parseInt(_buffer.substr(_position, 1));
+			
+			return _buffer[_position].type;
 		}
 
 		/**
@@ -182,6 +149,9 @@ package org.osflash.stream.types.string
 		public function get position() : uint { return _position; }
 		public function set position(value : uint) : void { _position = value; }
 
+		/**
+		 * @inheritDoc
+		 */
 		public function toString() : String
 		{
 			var result : String = "";

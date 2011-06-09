@@ -5,5 +5,6 @@ package org.osflash.stream
 	{
 		
 		public var _StreamStringOutputTest:StreamStringOutputTest;
+		public var _StreamVectorOutputTest:StreamVectorOutputTest;
 	}
 }

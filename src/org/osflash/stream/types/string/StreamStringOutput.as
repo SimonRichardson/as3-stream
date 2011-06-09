@@ -3,8 +3,6 @@ package org.osflash.stream.types.string
 	import org.osflash.stream.IStreamInput;
 	import org.osflash.stream.IStreamOutput;
 	import org.osflash.stream.StreamTypes;
-
-	import flash.errors.IllegalOperationError;
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
@@ -131,65 +129,20 @@ package org.osflash.stream.types.string
 			return _buffer;
 		}
 		
-		
 		/**
 		 * @inheritDoc
 		 */
-		public function get position() : uint
-		{
-			return _position;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function set position(value : uint) : void
-		{
-			_position = value;
-		}
+		public function get position() : uint { return _position; }
+		public function set position(value : uint) : void { _position = value; }
 		
 		/**
 		 * Return the stream as a string
 		 */
 		public function toString() : String
 		{
-			var result : String = "";
-			
 			const input : IStreamInput = new StreamStringInput(this);
 			input.position = _position;
-			
-			var type : int;
-			var valid : Boolean = true;
-			while(valid)
-			{
-				type = input.nextType;
-				switch(type)
-				{
-					case StreamTypes.BOOLEAN:
-						result += input.readBoolean();
-						break;
-					case StreamTypes.FLOAT:
-						result += input.readFloat();
-						break;
-					case StreamTypes.INT:
-						result += input.readInt();
-						break;
-					case StreamTypes.UINT:
-						result += input.readUnsignedInt();
-						break;
-					case StreamTypes.UTF:
-						result += input.readUTF();
-						break;
-					case StreamTypes.EOF:
-						valid = false;
-						break;
-					default:
-						throw new IllegalOperationError('>>>> ' + type);
-						break;
-				}
-			}
-			
-			return result;
+			return input.toString();
 		}
 	}
 }
