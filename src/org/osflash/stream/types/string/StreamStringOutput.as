@@ -1,12 +1,17 @@
 package org.osflash.stream.types.string
 {
+	import org.osflash.stream.IStreamInput;
 	import org.osflash.stream.IStreamOutput;
 	import org.osflash.stream.StreamTypes;
+
+	import flash.errors.IllegalOperationError;
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
 	public class StreamStringOutput implements IStreamOutput
 	{
+		
+		internal static const SEPERATOR : String = ":"; 
 		
 		/**
 		 * @private
@@ -32,7 +37,7 @@ package org.osflash.stream.types.string
 			const bit : String = value;
 			const length : int = bit.length;
 			
-			const packet : String = StreamTypes.UTF + length + ":" + bit;
+			const packet : String = StreamTypes.UTF + "" + length + SEPERATOR + bit;
 			
 			const parts : Array = _buffer.split('');
 			parts.splice(position, 0, packet);
@@ -49,7 +54,7 @@ package org.osflash.stream.types.string
 			const bit : String = value.toString();
 			const length : int = bit.length;
 			
-			const packet : String = StreamTypes.INT + length + ":" + bit;
+			const packet : String = StreamTypes.INT + "" + length + SEPERATOR + bit;
 			
 			const parts : Array = _buffer.split('');
 			parts.splice(position, 0, packet);
@@ -66,7 +71,7 @@ package org.osflash.stream.types.string
 			const bit : String = value.toString();
 			const length : int = bit.length;
 			
-			const packet : String = StreamTypes.UINT + length + ":" + bit;
+			const packet : String = StreamTypes.UINT + "" + length + SEPERATOR + bit;
 			
 			const parts : Array = _buffer.split('');
 			parts.splice(position, 0, packet);
@@ -83,7 +88,7 @@ package org.osflash.stream.types.string
 			const bit : String = value.toString();
 			const length : int = bit.length;
 			
-			const packet : String = StreamTypes.FLOAT + length + ":" + bit;
+			const packet : String = StreamTypes.FLOAT + "" + length + SEPERATOR + bit;
 			
 			const parts : Array = _buffer.split('');
 			parts.splice(position, 0, packet);
@@ -100,7 +105,7 @@ package org.osflash.stream.types.string
 			const bit : String = value ? 'true' : 'false';
 			const length : int = bit.length;
 			
-			const packet : String = StreamTypes.BOOLEAN + length + ":" + bit;
+			const packet : String = StreamTypes.BOOLEAN + "" + length + SEPERATOR + bit;
 			
 			const parts : Array = _buffer.split('');
 			parts.splice(position, 0, packet);
@@ -148,7 +153,43 @@ package org.osflash.stream.types.string
 		 */
 		public function toString() : String
 		{
-			return _buffer.substr(_position);
+			var result : String = "";
+			
+			const input : IStreamInput = new StreamStringInput(this);
+			input.position = _position;
+			
+			var type : int;
+			var valid : Boolean = true;
+			while(valid)
+			{
+				type = input.nextType;
+				switch(type)
+				{
+					case StreamTypes.BOOLEAN:
+						result += input.readBoolean();
+						break;
+					case StreamTypes.FLOAT:
+						result += input.readFloat();
+						break;
+					case StreamTypes.INT:
+						result += input.readInt();
+						break;
+					case StreamTypes.UINT:
+						result += input.readUnsignedInt();
+						break;
+					case StreamTypes.UTF:
+						result += input.readUTF();
+						break;
+					case StreamTypes.EOF:
+						valid = false;
+						break;
+					default:
+						throw new IllegalOperationError('>>>> ' + type);
+						break;
+				}
+			}
+			
+			return result;
 		}
 	}
 }

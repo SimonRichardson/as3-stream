@@ -20,9 +20,8 @@ package org.osflash.stream
 		function get nextType() : int;
 		
 		function get position() : uint;
-		
 		function set position(value : uint) : void;
-		
+				
 		function toString() : String;
 	}
 }

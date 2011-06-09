@@ -20,10 +20,17 @@ package org.osflash.stream.types.string
 		 */
 		private var _position : uint;
 		
+		/**
+		 * @private
+		 */
+		private var _seperator : int;
+		
 		public function StreamStringInput(stream : IStreamOutput)
 		{
 			if (!(stream is StreamStringOutput))
 				throw new Error('Missing Implementation');
+			
+			_seperator = StreamStringOutput.SEPERATOR.charCodeAt(0);
 
 			const output : StreamStringOutput = StreamStringOutput(stream);
 			output.position = 0;
@@ -41,7 +48,11 @@ package org.osflash.stream.types.string
 				StreamError.throwError(StreamError.INVALID_INT);
 			
 			const length : int = readPacketLength();
-			return parseInt(_buffer.substr(_position, length));
+			const result : int = parseInt(_buffer.substr(_position, length));
+			
+			_position += length;
+			
+			return result;
 		}
 
 		/**
@@ -53,7 +64,11 @@ package org.osflash.stream.types.string
 				StreamError.throwError(StreamError.INVALID_UINT);
 				
 			const length : int = readPacketLength();
-			return parseInt(_buffer.substr(_position, length));
+			const result : uint = parseInt(_buffer.substr(_position, length));
+			
+			_position += length;
+			
+			return result;
 		}
 
 		/**
@@ -65,7 +80,11 @@ package org.osflash.stream.types.string
 				StreamError.throwError(StreamError.INVALID_FLOAT);
 				
 			const length : int = readPacketLength();
-			return parseFloat(_buffer.substr(_position, length));
+			const result : Number = parseFloat(_buffer.substr(_position, length));
+			
+			_position += length;
+			
+			return result;
 		}
 
 		/**
@@ -77,7 +96,11 @@ package org.osflash.stream.types.string
 				StreamError.throwError(StreamError.INVALID_UTF);
 				
 			const length : int = readPacketLength();
-			return _buffer.substr(_position, length);
+			const result : String = _buffer.substr(_position, length);
+			
+			_position += length;
+			
+			return result;
 		}
 
 		/**
@@ -89,7 +112,11 @@ package org.osflash.stream.types.string
 				StreamError.throwError(StreamError.INVALID_BOOLEAN);
 				
 			const length : int = readPacketLength();
-			return _buffer.substr(_position, length) == "true";
+			const result : Boolean = _buffer.substr(_position, length) == "true";
+			
+			_position += length;
+			
+			return result;
 		}
 
 		/**
@@ -121,8 +148,11 @@ package org.osflash.stream.types.string
 			const total : int = _buffer.length;
 			for(var i : int = _position; i < total; i++)
 			{
-				if(_buffer.charCodeAt(_position) == 58)
+				if(_buffer.charCodeAt(_position) == _seperator)
+				{
+					_position++;
 					break;
+				}
 				
 				packet += _buffer.charAt(_position);
 				
@@ -139,7 +169,7 @@ package org.osflash.stream.types.string
 		{
 			if(_position >= _buffer.length)
 				return StreamTypes.EOF;
-			
+				
 			return parseInt(_buffer.substr(_position, 1));
 		}
 
