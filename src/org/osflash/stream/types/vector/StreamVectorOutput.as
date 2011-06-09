@@ -128,7 +128,11 @@ package org.osflash.stream.types.vector
 		 * @inheritDoc
 		 */
 		public function get position() : uint { return _position; }
-		public function set position(value : uint) : void { _position = value; }
+		public function set position(value : uint) : void 
+		{ 
+			if(value < 0) throw new ArgumentError('Value can not be less than zero');
+			_position = value; 
+		}
 
 		/**
 		 * @inheritDoc
