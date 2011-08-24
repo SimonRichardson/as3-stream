@@ -8,8 +8,10 @@ package org.osflash.stream.types.vector
 	import org.osflash.stream.types.vector.packets.VectorBooleanPacket;
 	import org.osflash.stream.types.vector.packets.VectorFloatPacket;
 	import org.osflash.stream.types.vector.packets.VectorIntPacket;
+	import org.osflash.stream.types.vector.packets.VectorObjectPacket;
 	import org.osflash.stream.types.vector.packets.VectorUIntPacket;
 	import org.osflash.stream.types.vector.packets.VectorUtfPacket;
+	import org.osflash.stream.types.vector.packets.VectorXMLPacket;
 
 	import flash.errors.IllegalOperationError;
 	/**
@@ -109,6 +111,36 @@ package org.osflash.stream.types.vector
 				StreamError.throwError(StreamError.INVALID_BOOLEAN);
 			
 			const packet : VectorBooleanPacket = VectorBooleanPacket(_buffer[_position]);
+			
+			_position++;
+			
+			return packet.value;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function readXML() : XML
+		{
+			if(readByte() != StreamTypes.XML)
+				StreamError.throwError(StreamError.INVALID_XML);
+			
+			const packet : VectorXMLPacket = VectorXMLPacket(_buffer[_position]);
+			
+			_position++;
+			
+			return packet.value;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function readObject() : Object
+		{
+			if(readByte() != StreamTypes.OBJECT)
+				StreamError.throwError(StreamError.INVALID_OBJECT);
+			
+			const packet : VectorObjectPacket = VectorObjectPacket(_buffer[_position]);
 			
 			_position++;
 			

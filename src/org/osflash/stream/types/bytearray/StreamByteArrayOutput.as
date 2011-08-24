@@ -69,6 +69,24 @@ package org.osflash.stream.types.bytearray
 		/**
 		 * @inheritDoc
 		 */
+		public function writeXML(value : XML) : void
+		{
+			_buffer.writeByte(StreamTypes.XML);
+			_buffer.writeObject(value);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function writeObject(value : Object) : void
+		{
+			_buffer.writeByte(StreamTypes.OBJECT);
+			_buffer.writeObject(value);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function clear() : void
 		{
 			_buffer.clear();
@@ -125,6 +143,12 @@ package org.osflash.stream.types.bytearray
 						break;
 					case StreamTypes.BOOLEAN: 
 						stream.writeBoolean(_buffer.readBoolean()); 
+						break;
+					case StreamTypes.XML:
+						stream.writeXML(_buffer.readObject());
+						break;
+					case StreamTypes.OBJECT:
+						stream.writeObject(_buffer.readObject());
 						break;
 					default: 
 						throw new IllegalOperationError();

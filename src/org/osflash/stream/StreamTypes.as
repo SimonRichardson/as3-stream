@@ -5,6 +5,7 @@ package org.osflash.stream
 	 */
 	public final class StreamTypes
 	{
+		
 		public static const EOF : int = -1;
 		
 		public static const UTF : int = 0;
@@ -16,5 +17,9 @@ package org.osflash.stream
 		public static const FLOAT : int = 3;
 		
 		public static const BOOLEAN : int = 4;
+		
+		public static const XML : int = 5;
+		
+		public static const OBJECT : int = 6;
 	}
 }

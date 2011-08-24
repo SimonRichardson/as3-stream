@@ -15,6 +15,10 @@ package org.osflash.stream
 		
 		function readBoolean() : Boolean;
 		
+		function readXML() : XML;
+		
+		function readObject() : Object;
+		
 		function clear() : void;
 		
 		function get nextType() : int;

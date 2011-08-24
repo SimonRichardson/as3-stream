@@ -1,14 +1,17 @@
 package org.osflash.stream.types.vector
 {
-	import flash.errors.IllegalOperationError;
 	import org.osflash.stream.IStreamInput;
 	import org.osflash.stream.IStreamOutput;
 	import org.osflash.stream.types.vector.packets.IVectorPacket;
 	import org.osflash.stream.types.vector.packets.VectorBooleanPacket;
 	import org.osflash.stream.types.vector.packets.VectorFloatPacket;
 	import org.osflash.stream.types.vector.packets.VectorIntPacket;
+	import org.osflash.stream.types.vector.packets.VectorObjectPacket;
 	import org.osflash.stream.types.vector.packets.VectorUIntPacket;
 	import org.osflash.stream.types.vector.packets.VectorUtfPacket;
+	import org.osflash.stream.types.vector.packets.VectorXMLPacket;
+
+	import flash.errors.IllegalOperationError;
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
 	 */
@@ -103,7 +106,46 @@ package org.osflash.stream.types.vector
 		 */
 		public function writeBoolean(value : Boolean) : void
 		{
-			_buffer.splice(_position, 1, new VectorBooleanPacket(value));
+			const packet : VectorBooleanPacket = new VectorBooleanPacket(value);
+			if(_position == _buffer.length)
+				_buffer.push(packet);
+			else if(_position < _buffer.length)
+				_buffer.splice(_position, 1, packet);
+			else 
+				throw new IllegalOperationError();
+				
+			_position++;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function writeXML(value : XML) : void
+		{
+			const packet : VectorXMLPacket = new VectorXMLPacket(value);
+			if(_position == _buffer.length)
+				_buffer.push(packet);
+			else if(_position < _buffer.length)
+				_buffer.splice(_position, 1, packet);
+			else 
+				throw new IllegalOperationError();
+				
+			_position++;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function writeObject(value : Object) : void
+		{
+			const packet : VectorObjectPacket = new VectorObjectPacket(value);
+			if(_position == _buffer.length)
+				_buffer.push(packet);
+			else if(_position < _buffer.length)
+				_buffer.splice(_position, 1, packet);
+			else 
+				throw new IllegalOperationError();
+				
 			_position++;
 		}
 

@@ -9,7 +9,7 @@ package org.osflash.stream.types.string
 	public class StreamStringOutput implements IStreamOutput
 	{
 		
-		internal static const SEPERATOR : String = ":"; 
+		internal static const SEPERATOR : String = "Þ"; 
 		
 		/**
 		 * @private
@@ -110,6 +110,31 @@ package org.osflash.stream.types.string
 			
 			_buffer = parts.join('');
 			_position += packet.length;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function writeXML(value : XML) : void
+		{
+			const bit : String = value.toXMLString();
+			const length : int = bit.length;
+			
+			const packet : String = StreamTypes.BOOLEAN + "" + length + SEPERATOR + bit;
+			
+			const parts : Array = _buffer.split('');
+			parts.splice(position, 0, packet);
+			
+			_buffer = parts.join('');
+			_position += packet.length;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function writeObject(value : Object) : void
+		{
+			throw new Error('Operation not supported');
 		}
 		
 		/**

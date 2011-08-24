@@ -1,5 +1,6 @@
 package org.osflash.stream
 {
+	import flash.utils.getDefinitionByName;
 	import asunit.asserts.assertEquals;
 	import org.osflash.stream.types.string.StreamStringOutput;
 	/**
@@ -29,7 +30,7 @@ package org.osflash.stream
 			stream.writeUTF('world');
 			stream.writeUnsignedInt(1);
 			
-			trace(stream.toString());
+			getDefinitionByName('trace')(stream.toString());
 			
 			assertEquals('toString method should equal', 'helloworld1', stream.toString());
 		}

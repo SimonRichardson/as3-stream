@@ -5,16 +5,22 @@ package org.osflash.stream
 	 */
 	public class StreamError extends Error
 	{
+		
+		private static const STREAM : int = 1000;
 
-		public static const INVALID_INT : int = 0x01;
+		public static const INVALID_INT : int = STREAM | 0x0001;
 
-		public static const INVALID_UINT : int = 0x02;
+		public static const INVALID_UINT : int = STREAM | 0x0002;
 
-		public static const INVALID_FLOAT : int = 0x03;
+		public static const INVALID_FLOAT : int = STREAM | 0x0003;
 
-		public static const INVALID_UTF : int = 0x04;
+		public static const INVALID_UTF : int = STREAM | 0x0004;
 
-		public static const INVALID_BOOLEAN : int = 0x05;
+		public static const INVALID_BOOLEAN : int = STREAM | 0x0005;
+		
+		public static const INVALID_XML : int = STREAM | 0x0005;
+		
+		public static const INVALID_OBJECT : int = STREAM | 0x0005;
 
 		public function StreamError(message : String)
 		{
@@ -38,6 +44,12 @@ package org.osflash.stream
 					throw new StreamError('Invalid utf');
 					break;
 				case INVALID_BOOLEAN:
+					throw new StreamError('Invalid boolean');
+					break;
+				case INVALID_XML:
+					throw new StreamError('Invalid boolean');
+					break;
+				case INVALID_OBJECT:
 					throw new StreamError('Invalid boolean');
 					break;
 				default:

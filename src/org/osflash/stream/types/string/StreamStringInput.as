@@ -120,7 +120,31 @@ package org.osflash.stream.types.string
 			
 			return result;
 		}
-
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function readXML() : XML
+		{
+			if(readByte() != StreamTypes.XML)
+				StreamError.throwError(StreamError.INVALID_XML);
+				
+			const length : int = readPacketLength();
+			const result : XML = new XML(_buffer.substr(_position, length));
+			
+			_position += length;
+			
+			return result;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function readObject() : Object
+		{
+			throw new Error('Operation not supported');
+		}
+		
 		/**
 		 * @inheritDoc
 		 */

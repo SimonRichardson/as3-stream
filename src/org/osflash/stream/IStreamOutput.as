@@ -15,6 +15,10 @@ package org.osflash.stream
 		
 		function writeBoolean(value : Boolean) : void;
 		
+		function writeXML(value : XML) : void;
+		
+		function writeObject(value : Object) : void;
+		
 		function clear() : void;
 		
 		function get position() : uint;
