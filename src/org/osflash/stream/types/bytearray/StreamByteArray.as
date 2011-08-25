@@ -1,13 +1,14 @@
 package org.osflash.stream.types.bytearray
 {
-	import org.osflash.stream.StreamError;
-	import org.osflash.stream.IStreamOutput;
+	import org.osflash.stream.IStreamIO;
 	import org.osflash.stream.IStreamInput;
+	import org.osflash.stream.IStreamOutput;
+	import org.osflash.stream.StreamError;
 
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
-	public class StreamByteArray implements IStreamInput, IStreamOutput
+	public class StreamByteArray implements IStreamIO
 	{
 
 		/**

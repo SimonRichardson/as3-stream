@@ -1,12 +1,13 @@
 package org.osflash.stream.types.vector
 {
+	import org.osflash.stream.IStreamIO;
 	import org.osflash.stream.IStreamInput;
 	import org.osflash.stream.IStreamOutput;
 	import org.osflash.stream.StreamError;
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
-	public class StreamVector implements IStreamInput, IStreamOutput
+	public class StreamVector implements IStreamIO
 	{
 
 		/**
